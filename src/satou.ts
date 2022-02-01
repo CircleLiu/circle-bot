@@ -2,8 +2,9 @@ import { Context } from 'koishi'
 import { sample } from 'lodash'
 
 export function apply(ctx: Context) {
+  console.log(ctx.app.http.config)
 
-  const yesList = ['爱你', '爱你❤️', '❤️❤️❤️❤️❤️']
+  const yesList = ['爱你', '爱你❤️', '❤️❤️❤️❤️❤️❤️']
   const noList = ['艹', 'bka']
   
   ctx.middleware(async (session, next) => {

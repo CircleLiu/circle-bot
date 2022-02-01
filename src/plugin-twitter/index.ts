@@ -1,19 +1,17 @@
-import { Context } from "koishi"
+import { Context, segment } from "koishi"
 import { TweetV2SingleResult, TwitterApi } from "twitter-api-v2"
 import { HttpsProxyAgent } from 'https-proxy-agent'
-import axios from "axios"
 
 const twitterUrlPattern = /^(?:https:\/\/)?twitter.com\/.+\/status\/([0-9]+).*$/m
 const shortUrlPattern = /(?:https:\/\/)?t.co\/.+$/m
 
 export interface Config {
   bearerToken: string
-  proxy?: string
 }
 
-export function apply(ctx: Context, { bearerToken, proxy }: Config) {
+export function apply(ctx: Context, { bearerToken }: Config) {
 
-  const httpAgent = new HttpsProxyAgent(proxy)
+  const httpAgent = new HttpsProxyAgent(ctx.app.http.config.proxyAgent)
   const twitterClient = new TwitterApi(bearerToken, {
     httpAgent,
   })
@@ -55,12 +53,9 @@ export function apply(ctx: Context, { bearerToken, proxy }: Config) {
   })
 
   async function getImageToBase64(url) {
-    const { data } = await axios.get(url, {
-      proxy: false,
-      httpsAgent: httpAgent,
+    const data = await ctx.app.http.get(url, {
       responseType: 'arraybuffer',
     })
-    const base64img = Buffer.from(data).toString('base64')
-    return `[CQ:image,file=base64://${base64img}]`
+    return segment.image(data)
   }
 }
