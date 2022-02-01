@@ -34,11 +34,11 @@ export function apply(ctx: Context, { bearerToken }: Config) {
    messages.push(tweet.data.text.replace(shortLink, ''))
    tweet.includes?.media?.forEach((media) => {
      if (media.type === 'photo') {
-       messages.push(getImageToBase64(media.url))
+       messages.push(segment.image(media.url))
      }
    })
-   const res = await Promise.all(messages)
-   return res.join('\n')
+
+   return messages.join('\n')
  }
   
   ctx.middleware(async (session, next) => {
@@ -51,11 +51,4 @@ export function apply(ctx: Context, { bearerToken }: Config) {
       return next()
     }
   })
-
-  async function getImageToBase64(url) {
-    const data = await ctx.app.http.get(url, {
-      responseType: 'arraybuffer',
-    })
-    return segment.image(data)
-  }
 }
