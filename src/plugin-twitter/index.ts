@@ -7,9 +7,10 @@ const shortUrlPattern = /(?:https:\/\/)?t.co\/.+$/m
 
 export interface Config {
   bearerToken: string
+  authority?: number
 }
 
-export function apply(ctx: Context, { bearerToken }: Config) {
+export function apply(ctx: Context, { bearerToken, authority = 1 }: Config) {
 
   const httpAgent = new HttpsProxyAgent(ctx.app.http.config.proxyAgent)
   const twitterClient = new TwitterApi(bearerToken, {
@@ -42,6 +43,12 @@ export function apply(ctx: Context, { bearerToken }: Config) {
  }
   
   ctx.middleware(async (session, next) => {
+
+    const user = await session.observeUser(['authority'] as const)
+    if (user.authority < authority) {
+      return next()
+    }
+
     const message = session.content.trim()
     const capture = message.match(twitterUrlPattern)
     if (capture) {
