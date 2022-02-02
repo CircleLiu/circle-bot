@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@koishijs/plugin-adapter-onebot": "^4.0.0",
+    "@koishijs/plugin-admin": "^1.0.0",
     "@koishijs/plugin-echo": "^1.0.0",
     "@koishijs/plugin-respondent": "^5.0.0",
     "axios": "^0.25.0",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@koishijs/cli": "^4.1.1",
+    "@koishijs/plugin-database-mongo": "^3.0.2",
     "@types/lodash": "^4.14.178",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
